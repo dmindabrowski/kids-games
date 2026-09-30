@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f8f2" />
+  <meta name="description" content="Puzzle i memo z własnych zdjęć, do zabawy na tablecie." />
+  <title>Kącik Gier Jasia</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <button class="wordmark" id="homeButton" aria-label="Strona główna">
+        <span class="wordmark-mark" aria-hidden="true">✳</span>
+        <span>Kącik Gier Jasia</span>
+      </button>
+      <button class="button button-quiet" id="managePhotosButton">
+        <span aria-hidden="true">＋</span> Zdjęcia
+      </button>
+    </header>
+
+    <section class="screen home-screen" id="homeScreen">
+      <div class="welcome">
+        <p class="eyebrow">WSPÓLNA ZABAWA</p>
+        <h1>W co dziś<br class="mobile-break" /> gramy?</h1>
+      </div>
+      <div class="game-menu">
+        <button class="game-tile puzzle-tile" data-game="puzzle">
+          <span class="tile-art puzzle-art" aria-hidden="true"><span>▧</span><span>▧</span><span>▧</span><span>▧</span></span>
+          <span class="tile-copy"><strong>Puzzle</strong><small>Ułóż zdjęcie z 12 części</small></span>
+          <span class="tile-arrow" aria-hidden="true">↗</span>
+        </button>
+        <button class="game-tile memo-tile" data-game="memo">
+          <span class="tile-art memo-art" aria-hidden="true"><span>♥</span><span>?</span></span>
+          <span class="tile-copy"><strong>Memo</strong><small>Odkryj 5 par obrazków</small></span>
+          <span class="tile-arrow" aria-hidden="true">↗</span>
+        </button>
+        <button class="game-tile numbers-tile" data-game="numbers">
+          <span class="tile-art numbers-art" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span></span>
+          <span class="tile-copy"><strong>Liczby</strong><small>Policz i wybierz cyfrę</small></span>
+          <span class="tile-arrow" aria-hidden="true">↗</span>
+        </button>
+      </div>
+      <section class="photo-shelf" aria-labelledby="shelfHeading">
+        <div class="shelf-heading">
+          <div><p class="eyebrow">WASZA GALERIA</p><h2 id="shelfHeading">Znajome obrazki</h2></div>
+          <span class="photo-count" id="photoCount">0 zdjęć</span>
+        </div>
+        <div class="home-photos" id="homePhotos"></div>
+        <button class="add-photos-inline" id="addPhotosButton">
+          <span aria-hidden="true">＋</span> Dodaj zdjęcia
+        </button>
+      </section>
+    </section>
+
+    <section class="screen library-screen" id="libraryScreen" hidden>
+      <div class="section-heading">
+        <button class="back-button" data-back aria-label="Wróć">←</button>
+        <div><p class="eyebrow" id="libraryEyebrow">DLA RODZICA</p><h1 id="libraryTitle">Wasze zdjęcia</h1></div>
+      </div>
+      <p class="section-hint" id="libraryHint">Dodaj zdjęcia. Zostają zapisane tylko na tym urządzeniu.</p>
+      <label class="upload-drop" for="photoInput">
+        <span class="upload-plus" aria-hidden="true">＋</span>
+        <span><strong>Dodaj własne zdjęcia</strong><small>Wybierz z galerii</small></span>
+        <input id="photoInput" type="file" accept="image/*" multiple />
+      </label>
+      <div class="library-grid" id="libraryGrid"></div>
+      <div class="library-footer" id="libraryFooter">
+        <span id="selectionCount"></span>
+        <button class="button button-primary" id="startGameButton" disabled>Wybierz zdjęcia</button>
+      </div>
+    </section>
+
+    <section class="screen puzzle-screen" id="puzzleScreen" hidden>
+      <div class="play-heading">
+        <button class="back-button" data-back aria-label="Wróć do wyboru zdjęć">←</button>
+        <div><p class="eyebrow">PUZZLE</p><h1>Ułóż obrazek</h1></div>
+        <span class="progress-pill" id="puzzleProgress">0 z 12</span>
+      </div>
+      <div class="puzzle-layout">
+        <div class="puzzle-board" id="puzzleBoard" aria-label="Plansza puzzli"></div>
+        <div class="piece-panel">
+          <p class="piece-instruction" id="pieceInstruction">Przeciągnij element na planszę</p>
+          <div class="piece-tray" id="pieceTray"></div>
+        </div>
+      </div>
+      <div class="completion-banner" id="puzzleComplete" hidden>
+        <span aria-hidden="true">✦</span><strong>Ułożone!</strong><button class="button button-primary" id="puzzleAgainButton">Jeszcze raz</button>
+      </div>
+    </section>
+
+    <section class="screen memo-screen" id="memoScreen" hidden>
+      <div class="play-heading">
+        <button class="back-button" data-back aria-label="Wróć do wyboru zdjęć">←</button>
+        <div><p class="eyebrow">MEMO</p><h1>Znajdź pary</h1></div>
+        <span class="progress-pill" id="memoProgress">0 z 5</span>
+      </div>
+      <div class="memo-board" id="memoBoard"></div>
+      <div class="completion-banner" id="memoComplete" hidden>
+        <span aria-hidden="true">✦</span><strong>Wszystkie pary!</strong><button class="button button-primary" id="memoAgainButton">Jeszcze raz</button>
+      </div>
+    </section>
+
+    <section class="screen numbers-screen" id="numbersScreen" hidden>
+      <div class="play-heading">
+        <button class="back-button" data-back aria-label="Wróć do strony głównej">←</button>
+        <div><p class="eyebrow">LICZBY</p><h1>Ile ich jest?</h1></div>
+        <span class="progress-pill" id="numbersProgress">1–5</span>
+      </div>
+      <div class="numbers-layout">
+        <div class="number-stage" id="numbersStage" aria-label="Policz obrazki"></div>
+        <div class="number-choices" id="numbersChoices"></div>
+      </div>
+    </section>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <footer class="foot">
+      <span>© <span id="copyYear"></span> Damian Dąbrowski</span>
+      <span class="foot-sep" aria-hidden="true">·</span>
+      <span class="foot-version">v<span id="appVersion">0.1.0</span></span>
+    </footer>
+  </main>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+    }
+  </script>
+</body>
+</html>
