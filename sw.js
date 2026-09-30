@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nasze-obrazki-v0.5.5';
+const CACHE_NAME = 'nasze-obrazki-v0.6.2';
 const APP_FILES = ['./', './index.html', './styles.css', './app.js', './manifest.webmanifest', './icon.svg', './assets/woz-strazacki.svg'];
 
 self.addEventListener('install', event => {

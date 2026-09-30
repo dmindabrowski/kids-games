@@ -3,7 +3,7 @@ const DB_VERSION = 1;
 const STORE_NAME = 'photos';
 const PUZZLE_SIZE = 12;
 const MEMO_PAIRS = 5;
-const APP_VERSION = '0.5.5';
+const APP_VERSION = '0.6.2';
 
 let puzzleColumns = 4;
 let puzzleRows = 3;
@@ -78,10 +78,17 @@ function releasePhotoUrl(photoId) {
   activePhotoUrls.delete(photoId);
 }
 
+const GAME_SCREENS = new Set(['puzzleScreen', 'memoScreen', 'numbersScreen']);
+
 function showScreen(screenId) {
   for (const screen of screens) screen.hidden = screen.id !== screenId;
+  document.body.classList.toggle('locked-view', GAME_SCREENS.has(screenId));
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+document.addEventListener('gesturestart', event => event.preventDefault());
+document.addEventListener('gesturechange', event => event.preventDefault());
+document.addEventListener('gestureend', event => event.preventDefault());
 
 function notify(message) {
   toast.textContent = message;
@@ -235,6 +242,13 @@ function shuffled(items) {
   return result;
 }
 
+function memoRowSizes(total) {
+  const rows = 3;
+  const base = Math.floor(total / rows);
+  const extra = total - base * rows;
+  return Array.from({ length: rows }, (_, index) => base + (index < extra ? 1 : 0));
+}
+
 function pieceStyle(photo, pieceIndex) {
   const column = pieceIndex % puzzleColumns;
   const row = Math.floor(pieceIndex / puzzleColumns);
@@ -270,7 +284,8 @@ async function startPuzzle(photo) {
   const portrait = height > width;
   puzzleColumns = portrait ? 3 : 4;
   puzzleRows = portrait ? 4 : 3;
-  board.style.aspectRatio = `${width} / ${height}`;
+  board.style.setProperty('--puzzle-ratio', String(width / height));
+  board.style.removeProperty('aspect-ratio');
   board.style.gridTemplateColumns = `repeat(${puzzleColumns}, 1fr)`;
   board.style.gridTemplateRows = `repeat(${puzzleRows}, 1fr)`;
   for (let index = 0; index < PUZZLE_SIZE; index++) {
@@ -370,53 +385,62 @@ function startMemo(selectedPhotos) {
   let locked = false;
   let foundPairs = 0;
   const cards = shuffled(selectedPhotos.flatMap(photo => [photo, photo]));
-  for (const photo of cards) {
-    const card = document.createElement('button');
-    card.className = 'memo-card';
-    card.type = 'button';
-    card.dataset.photoId = photo.id;
-    card.setAttribute('aria-label', 'Odkryj kartę');
-    const image = document.createElement('img');
-    image.src = imageUrl(photo);
-    image.alt = photo.name || 'Zdjęcie';
-    image.hidden = true;
-    card.append(image);
-    card.addEventListener('click', () => {
-      if (locked || card.classList.contains('revealed') || card.classList.contains('matched')) return;
-      card.classList.add('revealed');
-      image.hidden = false;
-      if (!firstCard) {
-        firstCard = card;
-        return;
-      }
-      if (firstCard.dataset.photoId === card.dataset.photoId) {
-        firstCard.classList.replace('revealed', 'matched');
-        card.classList.replace('revealed', 'matched');
-        firstCard.disabled = true;
-        card.disabled = true;
-        firstCard = null;
-        foundPairs++;
-        document.querySelector('#memoProgress').textContent = `${foundPairs} z ${MEMO_PAIRS}`;
-        if (foundPairs === MEMO_PAIRS) {
-          document.querySelector('#memoComplete').hidden = false;
-          celebrate('Wszystkie pary!');
+  const rowSizes = memoRowSizes(cards.length);
+  board.style.setProperty('--memo-columns', String(Math.max(...rowSizes)));
+  let cursor = 0;
+  for (const rowSize of rowSizes) {
+    const row = document.createElement('div');
+    row.className = 'memo-row';
+    for (let index = 0; index < rowSize; index++) {
+      const photo = cards[cursor++];
+      const card = document.createElement('button');
+      card.className = 'memo-card';
+      card.type = 'button';
+      card.dataset.photoId = photo.id;
+      card.setAttribute('aria-label', 'Odkryj kartę');
+      const image = document.createElement('img');
+      image.src = imageUrl(photo);
+      image.alt = photo.name || 'Zdjęcie';
+      image.hidden = true;
+      card.append(image);
+      card.addEventListener('click', () => {
+        if (locked || card.classList.contains('revealed') || card.classList.contains('matched')) return;
+        card.classList.add('revealed');
+        image.hidden = false;
+        if (!firstCard) {
+          firstCard = card;
+          return;
         }
-      } else {
-        locked = true;
-        const previous = firstCard;
-        firstCard = null;
-        mismatchedTimeout = setTimeout(() => {
-          for (const openCard of [previous, card]) {
-            openCard.classList.remove('revealed');
-            openCard.classList.add('mismatched');
-            openCard.querySelector('img').hidden = true;
-            setTimeout(() => openCard.classList.remove('mismatched'), 260);
+        if (firstCard.dataset.photoId === card.dataset.photoId) {
+          firstCard.classList.replace('revealed', 'matched');
+          card.classList.replace('revealed', 'matched');
+          firstCard.disabled = true;
+          card.disabled = true;
+          firstCard = null;
+          foundPairs++;
+          document.querySelector('#memoProgress').textContent = `${foundPairs} z ${MEMO_PAIRS}`;
+          if (foundPairs === MEMO_PAIRS) {
+            document.querySelector('#memoComplete').hidden = false;
+            celebrate('Wszystkie pary!');
           }
-          locked = false;
-        }, 850);
-      }
-    });
-    board.append(card);
+        } else {
+          locked = true;
+          const previous = firstCard;
+          firstCard = null;
+          mismatchedTimeout = setTimeout(() => {
+            for (const openCard of [previous, card]) {
+              openCard.classList.remove('revealed');
+              openCard.classList.add('mismatched');
+              openCard.querySelector('img').hidden = true;
+              setTimeout(() => openCard.classList.remove('mismatched'), 260);
+            }
+            locked = false;
+          }, 850);
+        }
+      });
+      row.append(card);
+    }
+    board.append(row);
   }
   document.querySelector('#memoProgress').textContent = `0 z ${MEMO_PAIRS}`;
   showScreen('memoScreen');

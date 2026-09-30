@@ -1,7 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="116" fill="#28725e"/>
-  <path d="M256 80c18 73 42 97 115 115-73 18-97 42-115 115-18-73-42-97-115-115 73-18 97-42 115-115Z" fill="#f1c64f"/>
-  <circle cx="190" cy="328" r="48" fill="#e9785d"/>
-  <circle cx="322" cy="328" r="48" fill="#78b8c3"/>
-  <path d="M190 280v96m-48-48h96M322 280v96m-48-48h96" stroke="#fffefa" stroke-linecap="round" stroke-width="10" opacity=".9"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Kącik Gier Jasia">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#78b8c3"/>
+      <stop offset="1" stop-color="#28725e"/>
+    </linearGradient>
+    <radialGradient id="starShine" cx="0.35" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#ffe89a"/>
+      <stop offset="1" stop-color="#f1c64f"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#bg)"/>
+  <path d="M104 108 l6 -16 l6 16 l16 6 l-16 6 l-6 16 l-6 -16 l-16 -6 z" fill="#fffefa" opacity=".55"/>
+  <path d="M414 138 l5 -12 l5 12 l12 5 l-12 5 l-5 12 l-5 -12 l-12 -5 z" fill="#fffefa" opacity=".45"/>
+  <path d="M96 408 l5 -12 l5 12 l12 5 l-12 5 l-5 12 l-5 -12 l-12 -5 z" fill="#fffefa" opacity=".4"/>
+  <circle cx="422" cy="404" r="8" fill="#fffefa" opacity=".5"/>
+  <circle cx="440" cy="222" r="6" fill="#fffefa" opacity=".45"/>
+  <circle cx="72" cy="228" r="7" fill="#fffefa" opacity=".5"/>
+  <path d="M256 104 L306 214 L426 230 L338 314 L360 434 L256 372 L152 434 L174 314 L86 230 L206 214 Z" fill="url(#starShine)" stroke="#c99a2a" stroke-width="6" stroke-linejoin="round"/>
+  <ellipse cx="232" cy="252" rx="16" ry="18" fill="#25312e"/>
+  <ellipse cx="288" cy="252" rx="16" ry="18" fill="#25312e"/>
+  <circle cx="238" cy="246" r="5" fill="#fffefa"/>
+  <circle cx="294" cy="246" r="5" fill="#fffefa"/>
+  <path d="M212 296 Q256 344 300 296" fill="none" stroke="#25312e" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="200" cy="278" r="10" fill="#e9785d" opacity=".55"/>
+  <circle cx="320" cy="278" r="10" fill="#e9785d" opacity=".55"/>
 </svg>
