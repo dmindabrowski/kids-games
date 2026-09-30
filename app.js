@@ -3,10 +3,11 @@ const DB_VERSION = 1;
 const STORE_NAME = 'photos';
 const PUZZLE_SIZE = 12;
 const MEMO_PAIRS = 5;
-const APP_VERSION = '0.6.2';
+const APP_VERSION = '0.6.3';
 
 let puzzleColumns = 4;
 let puzzleRows = 3;
+let puzzleRatio = 1.333;
 let numbersMaxDigit = 5;
 let numbersCorrectStreak = 0;
 let audioContext;
@@ -284,7 +285,7 @@ async function startPuzzle(photo) {
   const portrait = height > width;
   puzzleColumns = portrait ? 3 : 4;
   puzzleRows = portrait ? 4 : 3;
-  board.style.setProperty('--puzzle-ratio', String(width / height));
+  puzzleRatio = width / height;
   board.style.removeProperty('aspect-ratio');
   board.style.gridTemplateColumns = `repeat(${puzzleColumns}, 1fr)`;
   board.style.gridTemplateRows = `repeat(${puzzleRows}, 1fr)`;
@@ -311,6 +312,25 @@ async function startPuzzle(photo) {
   }
   document.querySelector('#puzzleProgress').textContent = `0 z ${PUZZLE_SIZE}`;
   showScreen('puzzleScreen');
+  requestAnimationFrame(fitPuzzleBoard);
+}
+
+function fitPuzzleBoard() {
+  const board = document.querySelector('#puzzleBoard');
+  if (!board || board.offsetParent === null) return;
+  const layout = board.parentElement;
+  const layoutRect = layout.getBoundingClientRect();
+  const cols = getComputedStyle(layout).gridTemplateColumns.split(/\s+/).map(parseFloat).filter(v => !isNaN(v));
+  const boardCellW = cols[0] ?? layoutRect.width;
+  const boardCellH = layoutRect.height;
+  const border = 14;
+  const availW = Math.max(0, boardCellW - border);
+  const availH = Math.max(0, boardCellH - border);
+  let w = Math.min(availW, availH * puzzleRatio);
+  if (!Number.isFinite(w) || w <= 0) w = Math.min(availW, availH);
+  const h = w / puzzleRatio;
+  board.style.width = `${Math.floor(w) + border}px`;
+  board.style.height = `${Math.floor(h) + border}px`;
 }
 
 function placePiece(pieceIndex, slot) {
@@ -444,6 +464,7 @@ function startMemo(selectedPhotos) {
   }
   document.querySelector('#memoProgress').textContent = `0 z ${MEMO_PAIRS}`;
   showScreen('memoScreen');
+  requestAnimationFrame(fitMemoBoard);
 }
 
 document.querySelector('#memoAgainButton').addEventListener('click', () => startMemo(photos.filter(photo => selectedPhotoIds.has(photo.id))));
@@ -533,8 +554,7 @@ function numbersRound() {
     button.addEventListener('click', () => handleDigitClick(button, digit, count));
     choices.append(button);
   }
-  document.querySelector('#numbersProgress').textContent = `1\u2013${numbersMaxDigit}`;
-}
+  document.querySelector('#numbersProgress').textContent = `1\u2013${numbersMaxDigit}`;  requestAnimationFrame(fitNumberStage);}
 
 function createTruck(index) {
   const item = document.createElement('img');
@@ -627,6 +647,43 @@ function speakLines(...lines) {
     }
   } catch (error) { /* ignore */ }
 }
+
+function fitNumberStage() {
+  const stage = document.querySelector('#numbersStage');
+  if (!stage || stage.offsetHeight === 0) return;
+  const rows = [...stage.querySelectorAll('.number-stage-row')];
+  if (rows.length === 0) return;
+  const columns = rows[0].querySelectorAll('.number-item').length || 1;
+  const styles = getComputedStyle(stage);
+  const gap = parseFloat(styles.getPropertyValue('--truck-gap')) || 14;
+  const availW = stage.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
+  const availH = stage.clientHeight - parseFloat(styles.paddingTop) - parseFloat(styles.paddingBottom);
+  const maxByW = (availW - (columns - 1) * gap) / columns;
+  const maxByH = (availH - (rows.length - 1) * gap) / rows.length;
+  const size = Math.max(60, Math.min(maxByW, maxByH, 240));
+  stage.style.setProperty('--truck-item-size', `${Math.floor(size)}px`);
+}
+
+function fitMemoBoard() {
+  const board = document.querySelector('#memoBoard');
+  if (!board || board.offsetHeight === 0) return;
+  const rows = [...board.querySelectorAll('.memo-row')];
+  if (rows.length === 0) return;
+  const maxCols = Math.max(...rows.map(row => row.querySelectorAll('.memo-card').length));
+  const gap = parseFloat(getComputedStyle(board).getPropertyValue('--memo-gap')) || 14;
+  const availW = board.clientWidth;
+  const availH = board.clientHeight;
+  const maxCardWFromW = (availW - (maxCols - 1) * gap) / maxCols;
+  const maxCardHFromH = (availH - (rows.length - 1) * gap) / rows.length;
+  const cardW = Math.max(50, Math.min(maxCardWFromW, maxCardHFromH * 1.05, 260));
+  board.style.setProperty('--memo-card-w', `${Math.floor(cardW)}px`);
+}
+
+window.addEventListener('resize', () => {
+  fitNumberStage();
+  fitMemoBoard();
+  fitPuzzleBoard();
+});
 
 function celebrate(message = 'Brawo!') {
   const confetti = document.createElement('div');
