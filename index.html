@@ -23,9 +23,16 @@
         <span class="wordmark-mark" aria-hidden="true">★</span>
         <span>Kącik Gier Jasia</span>
       </button>
-      <button class="button button-quiet" id="managePhotosButton">
-        <span aria-hidden="true">＋</span> Zdjęcia
-      </button>
+      <div class="topbar-actions">
+        <button class="button button-quiet" id="statsButton" type="button" aria-label="Statystyki">
+          <span class="info-badge chart-badge" aria-hidden="true">
+            <svg viewBox="0 0 16 16"><rect x="2" y="9" width="3" height="5" rx="1"/><rect x="6.5" y="5" width="3" height="9" rx="1"/><rect x="11" y="2" width="3" height="12" rx="1"/></svg>
+          </span> Statystyki
+        </button>
+        <button class="button button-quiet" id="parentInfoButton" aria-label="Informacje dla rodziców">
+          <span class="info-badge" aria-hidden="true">i</span> Informacje dla rodziców
+        </button>
+      </div>
     </header>
 
     <section class="screen home-screen" id="homeScreen">
@@ -47,6 +54,13 @@
         <button class="game-tile numbers-tile" data-game="numbers">
           <span class="tile-art numbers-art" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span></span>
           <span class="tile-copy"><strong>Liczby</strong><small>Policz i wybierz cyfrę</small></span>
+          <span class="tile-arrow" aria-hidden="true">↗</span>
+        </button>
+        <button class="game-tile trace-tile" data-game="trace">
+          <span class="tile-art trace-art" aria-hidden="true">
+            <svg viewBox="0 0 100 100"><path d="M8 60 Q30 20 50 50 Q70 80 92 40" fill="none" stroke="#fffefa" stroke-width="10" stroke-linecap="round"/><circle cx="8" cy="60" r="7" fill="#fffefa"/><circle cx="92" cy="40" r="7" fill="#c92030"/></svg>
+          </span>
+          <span class="tile-copy"><strong>Ślad</strong><small>Przeciągnij palcem</small></span>
           <span class="tile-arrow" aria-hidden="true">↗</span>
         </button>
       </div>
@@ -73,9 +87,16 @@
         <span><strong>Dodaj własne zdjęcia</strong><small>Wybierz z galerii</small></span>
         <input id="photoInput" type="file" accept="image/*" multiple />
       </label>
+      <div class="difficulty-chips" id="difficultyChips" hidden>
+        <span class="difficulty-label">Trudność:</span>
+        <button type="button" class="chip" data-difficulty="easy">Łatwe</button>
+        <button type="button" class="chip" data-difficulty="medium">Średnie</button>
+        <button type="button" class="chip" data-difficulty="hard">Trudne</button>
+      </div>
       <div class="library-grid" id="libraryGrid"></div>
       <div class="library-footer" id="libraryFooter">
         <span id="selectionCount"></span>
+        <button class="button button-quiet" id="randomSelectButton" type="button" hidden>🎲 Wybierz losowo</button>
         <button class="button button-primary" id="startGameButton" disabled>Wybierz zdjęcia</button>
       </div>
     </section>
@@ -114,7 +135,7 @@
       <div class="play-heading">
         <button class="back-button" data-back aria-label="Wróć do strony głównej">←</button>
         <div><p class="eyebrow">LICZBY</p><h1>Ile ich jest?</h1></div>
-        <span class="progress-pill" id="numbersProgress">1–5</span>
+        <button class="progress-pill" id="numbersProgress" type="button" aria-label="Poziom">1–4</button>
       </div>
       <div class="numbers-layout">
         <div class="number-stage" id="numbersStage" aria-label="Policz obrazki"></div>
@@ -122,8 +143,108 @@
       </div>
     </section>
 
+    <section class="screen trace-screen" id="traceScreen" hidden>
+      <div class="play-heading">
+        <button class="back-button" data-back aria-label="Wróć do strony głównej">←</button>
+        <div><p class="eyebrow">ŚLAD</p><h1>Przeciągnij palcem</h1></div>
+        <span class="progress-pill" id="traceProgress">Ślad 1</span>
+      </div>
+      <div class="trace-wrap">
+        <svg class="trace-svg" id="traceSvg" viewBox="0 0 480 260" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Ślad do prowadzenia palcem">
+          <path id="tracePath" d="" fill="none" stroke="#f4b12e" stroke-width="34" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>
+          <path id="tracePath2" d="" fill="none" stroke="#fef4c8" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline id="traceTrail" points="" fill="none" stroke="#28725e" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+          <circle id="traceStart" cx="0" cy="0" r="22" fill="#4d8c46" stroke="#2f6c31" stroke-width="3"/>
+          <text id="traceStartLabel" x="0" y="0" text-anchor="middle" font-family="Verdana, sans-serif" font-size="22" font-weight="800" fill="white" dominant-baseline="central">→</text>
+          <g id="traceEnd">
+            <circle cx="0" cy="0" r="22" fill="#c92030" stroke="#8f1622" stroke-width="3"/>
+            <path d="M-3 -14 h12 v10 h-12z" fill="#fef4c8"/>
+            <path d="M-3 -14 v22" stroke="#8f1622" stroke-width="2.5" stroke-linecap="round"/>
+          </g>
+        </svg>
+      </div>
+    </section>
+
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+    <div class="modal" id="levelInfoModal" hidden>
+      <div class="modal-backdrop" data-close></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="levelInfoTitle">
+        <h2 id="levelInfoTitle">Poziomy trudności</h2>
+        <p>Aktualny zakres: <strong id="currentLevelText">1–4</strong> (poziom <span id="currentLevelNumber">2</span> z 7).</p>
+        <ul class="levels-list" id="levelsList"></ul>
+        <p class="levels-rules">Awans o jeden poziom po <strong>3 poprawnych z rzędu</strong>.<br />Spadek o jeden poziom po <strong>2 błędach z rzędu</strong>.</p>
+        <div class="modal-actions">
+          <button class="button button-primary" id="levelInfoClose" type="button">OK</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal" id="parentInfoModal" hidden>
+      <div class="modal-backdrop" data-close></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="parentInfoTitle">
+        <h2 id="parentInfoTitle">O aplikacji</h2>
+        <p><strong>Kącik Gier Jasia</strong> to prywatna, tabletowa aplikacja z minigrami dla trzylatka: <strong>Puzzle</strong>, <strong>Memo</strong>, <strong>Liczby</strong> i <strong>Ślad</strong>.</p>
+        <h3 class="modal-subheading">Prywatność</h3>
+        <p>Zdjęcia są przechowywane <strong>wyłącznie lokalnie na tym urządzeniu</strong>, w pamięci przeglądarki. Aplikacja nie wysyła zdjęć ani żadnych danych na serwer i po pierwszym otwarciu działa w pełni offline.</p>
+        <h3 class="modal-subheading">Bezpieczna zabawa</h3>
+        <p>Ekran gry jest zablokowany — nie da się przypadkowo przewinąć ani powiększyć widoku. Poziom trudności gry Liczby dostosowuje się do dziecka: <strong>rośnie po serii poprawnych odpowiedzi</strong> i <strong>spada po błędach</strong>.</p>
+        <h3 class="modal-subheading">Instalacja jak natywna aplikacja</h3>
+        <p><strong>iPad / iPhone (Safari):</strong> wybierz <strong>Udostępnij → Dodaj do ekranu początkowego</strong>.</p>
+        <p><strong>Android (Chrome):</strong> otwórz menu <strong>⋮</strong> w prawym górnym rogu i wybierz <strong>Zainstaluj aplikację</strong> lub <strong>Dodaj do ekranu głównego</strong>.</p>
+        <p>Aplikacja pojawi się z własną ikoną i będzie działać offline.</p>
+        <div class="modal-actions">
+          <button class="button button-primary" id="parentInfoClose" type="button">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="statsModal" hidden>
+      <div class="modal-backdrop" data-close></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="statsTitle">
+        <h2 id="statsTitle">Statystyki</h2>
+        <div class="stats-tabs" role="tablist">
+          <button class="stats-tab active" data-tab="session" type="button" role="tab">Sesja</button>
+          <button class="stats-tab" data-tab="history" type="button" role="tab">Historia</button>
+        </div>
+        <div class="stats-panel" data-panel="session">
+          <p>Ta sesja rozpoczęła się <span id="sessionStartLabel">chwilę temu</span>.</p>
+          <h3 class="modal-subheading">Czas w grach</h3>
+          <ul class="stats-list" id="statsTimeList"></ul>
+          <h3 class="modal-subheading">Osiągnięcia</h3>
+          <ul class="stats-list" id="statsAchievementsList"></ul>
+          <h3 class="modal-subheading">Liczby</h3>
+          <ul class="stats-list" id="statsNumbersList"></ul>
+          <h4 class="modal-mini-heading" id="statsDigitHeading" hidden>Trafność per cyfra</h4>
+          <div class="digit-grid" id="statsDigitGrid"></div>
+          <div class="stats-actions">
+            <button class="button button-quiet" id="resetStatsButton" type="button">Zresetuj sesję</button>
+            <button class="button button-primary" id="statsClose" type="button">OK</button>
+          </div>
+        </div>
+        <div class="stats-panel" data-panel="history" hidden>
+          <p id="historySummary">Zbieramy dane od pierwszego uruchomienia.</p>
+          <ul class="stats-list" id="historySessionsList"></ul>
+          <h3 class="modal-subheading">Pory zabawy</h3>
+          <div class="bars" id="historyBucketsBars"></div>
+          <h3 class="modal-subheading">Łączny czas w grach</h3>
+          <ul class="stats-list" id="historyTimeList"></ul>
+          <h3 class="modal-subheading">Ulubione gry (udział czasu)</h3>
+          <div class="bars" id="historyFrequencyBars"></div>
+          <h3 class="modal-subheading">Rekordy</h3>
+          <div class="records-grid" id="historyRecords"></div>
+          <h3 class="modal-subheading">Osiągnięcia</h3>
+          <ul class="stats-list" id="historyAchievementsList"></ul>
+          <h3 class="modal-subheading">Liczby</h3>
+          <ul class="stats-list" id="historyNumbersList"></ul>
+          <h4 class="modal-mini-heading" id="historyDigitHeading" hidden>Trafność per cyfra</h4>
+          <div class="digit-grid" id="historyDigitGrid"></div>
+          <div class="stats-actions">
+            <button class="button button-quiet" id="resetHistoryButton" type="button">Wyzeruj historię</button>
+            <button class="button button-primary" id="statsCloseHistory" type="button">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <footer class="foot">
       <span>© <span id="copyYear"></span> Damian Dąbrowski</span>
       <span class="foot-sep" aria-hidden="true">·</span>

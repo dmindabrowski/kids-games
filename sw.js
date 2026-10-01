@@ -1,5 +1,5 @@
-const CACHE_NAME = 'nasze-obrazki-v0.6.3';
-const APP_FILES = ['./', './index.html', './styles.css', './app.js', './manifest.webmanifest', './icon.svg', './assets/woz-strazacki.svg'];
+const CACHE_NAME = 'nasze-obrazki-v0.12.1';
+const APP_FILES = ['./', './index.html', './styles.css', './app.js', './manifest.webmanifest', './icon.svg', './assets/woz-strazacki.svg', './assets/samochod-policji.svg', './assets/karetka.svg', './assets/smieciarka.svg', './assets/dzwig.svg'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_FILES)));
