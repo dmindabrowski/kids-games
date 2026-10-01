@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 150" role="img" aria-label="Śmieciarka">
+  <ellipse cx="110" cy="138" rx="90" ry="5" fill="#25312e" opacity=".14"/>
+  <rect x="60" y="50" width="130" height="60" rx="6" fill="#4d8c46"/>
+  <rect x="60" y="50" width="130" height="60" rx="6" fill="none" stroke="#2f6c31" stroke-width="2"/>
+  <rect x="58" y="44" width="134" height="8" rx="2" fill="#3f7a3d" stroke="#2f6c31" stroke-width="1.5"/>
+  <path d="M74 50 v60 M96 50 v60 M118 50 v60 M140 50 v60 M162 50 v60" stroke="#2f6c31" stroke-width="1.5" opacity=".55"/>
+  <g transform="translate(122 78)">
+    <path d="M0 -14 L10 4 L-10 4 Z" fill="#fef4c8" stroke="#2f6c31" stroke-width="1.5"/>
+    <path d="M2 4 L2 12 L-6 12 L-6 4 Z" fill="#fef4c8" stroke="#2f6c31" stroke-width="1.5"/>
+    <path d="M-10 4 L-5 12 M10 4 L5 12" stroke="#2f6c31" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  </g>
+  <path d="M190 60 L206 52 L214 66 L214 96 L206 108 L190 100 Z" fill="#3f7a3d" stroke="#2f6c31" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="196" y="66" width="14" height="34" rx="2" fill="#25312e"/>
+  <path d="M196 76 h14 M196 86 h14" stroke="#4d8c46" stroke-width="1.5" opacity=".7"/>
+  <rect x="14" y="70" width="54" height="40" rx="6" fill="#e63946"/>
+  <rect x="14" y="70" width="54" height="40" rx="6" fill="none" stroke="#8f1622" stroke-width="2"/>
+  <rect x="20" y="76" width="26" height="20" rx="3" fill="#a8dadc"/>
+  <path d="M20 76 h26 v4 h-26z" fill="#457b9d" opacity=".4"/>
+  <rect x="50" y="94" width="16" height="6" rx="1" fill="#8f1622"/>
+  <rect x="8" y="96" width="10" height="10" rx="2" fill="#25312e"/>
+  <rect x="10" y="82" width="6" height="6" rx="1" fill="#fff9c4"/>
+  <rect x="14" y="108" width="200" height="8" fill="#25312e"/>
+  <circle cx="42" cy="120" r="14" fill="#25312e"/>
+  <circle cx="42" cy="120" r="6" fill="#dcdcdc"/>
+  <circle cx="170" cy="120" r="14" fill="#25312e"/>
+  <circle cx="170" cy="120" r="6" fill="#dcdcdc"/>
+</svg>

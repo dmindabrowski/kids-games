@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 150" role="img" aria-label="Samochód policji">
+  <ellipse cx="110" cy="138" rx="90" ry="5" fill="#25312e" opacity=".14"/>
+  <path d="M20 108 L20 88 Q20 78 30 74 L60 68 Q78 50 110 50 L138 50 Q170 50 188 68 L200 74 Q210 80 210 90 L210 108 Z" fill="#1e4d8a"/>
+  <path d="M20 88 Q20 78 30 74 L60 68 Q78 50 110 50 L138 50 Q170 50 188 68 L200 74 Q210 80 210 90 Z" fill="#fffefa"/>
+  <rect x="18" y="92" width="194" height="10" fill="#78b8c3"/>
+  <rect x="18" y="92" width="194" height="2" fill="#457b9d" opacity=".55"/>
+  <path d="M64 74 Q78 58 100 58 L108 58 L108 78 L64 78 Z" fill="#a8dadc"/>
+  <path d="M112 58 L138 58 Q158 58 172 74 L172 78 L112 78 Z" fill="#a8dadc"/>
+  <path d="M64 60 h108 v4 h-108z" fill="#457b9d" opacity=".35"/>
+  <rect x="88" y="38" width="44" height="14" rx="3" fill="#25312e"/>
+  <rect x="92" y="30" width="16" height="12" rx="2" fill="#c92030"/>
+  <rect x="112" y="30" width="16" height="12" rx="2" fill="#4a9de0"/>
+  <rect x="200" y="94" width="10" height="8" rx="2" fill="#fff9c4"/>
+  <rect x="10" y="94" width="10" height="8" rx="2" fill="#fff9c4"/>
+  <rect x="34" y="96" width="26" height="14" rx="3" fill="#fffefa"/>
+  <text x="47" y="107" font-family="Verdana, sans-serif" font-size="10" font-weight="800" fill="#1e4d8a" text-anchor="middle">997</text>
+  <line x1="110" y1="82" x2="110" y2="112" stroke="#12345c" stroke-width="2" opacity=".45"/>
+  <circle cx="62" cy="118" r="16" fill="#25312e"/>
+  <circle cx="62" cy="118" r="7" fill="#dcdcdc"/>
+  <circle cx="158" cy="118" r="16" fill="#25312e"/>
+  <circle cx="158" cy="118" r="7" fill="#dcdcdc"/>
+</svg>
